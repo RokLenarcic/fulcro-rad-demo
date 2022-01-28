@@ -5,6 +5,8 @@
                [com.fulcrologic.semantic-ui.modules.dropdown.ui-dropdown-item :refer [ui-dropdown-item]]])
     #?(:clj  [com.fulcrologic.fulcro.dom-server :as dom :refer [div label input]]
        :cljs [com.fulcrologic.fulcro.dom :as dom :refer [div label input]])
+    [com.example.model.item :as m.item]
+    [com.fulcrologic.fulcro.algorithms.tempid :as tempid]
     [com.example.ui.account-forms :refer [AccountForm AccountList]]
     [com.example.ui.invoice-forms :refer [InvoiceForm InvoiceList AccountInvoices]]
     [com.example.ui.item-forms :refer [ItemForm InventoryReport]]
@@ -28,7 +30,11 @@
    :ident         (fn [] [:component/id ::LandingPage])
    :initial-state {}
    :route-segment ["landing-page"]}
-  (dom/div "Welcome to the Demo. Please log in."))
+  (dom/div "Welcome to the Demo. Please log in."
+    (dom/button {:onClick (fn []
+                            (let [id (tempid/tempid)]
+                              (comp/transact! this [(form/save-as-form {:root-ident [::m.item/id id] :entity {::m.item/id id}})])))}
+                "Demonstrate bug.")))
 
 ;; This will just be a normal router...but there can be many of them.
 (defrouter MainRouter [this {:keys [current-state route-factory route-props]}]
